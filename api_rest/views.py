@@ -17,9 +17,22 @@ def  get_users(request):
 
         users = User.objects.all() # obtém todos os usuários da classe User
 
-        serializer = userSerializer(users, many=True) # serializa os usuários em JSON
+        serializer = userSerializer(users, many=True) # serializa os usuários em JSON (atributo many retorna vários, não é objeto único)
 
         return Response(serializer.data) # retorna a resposta do serializer
     
     return Response(status=status.HTTP_400_BAD_REQUEST) # retorna o status 404 se não passar no IF
-# Create your views here.
+
+
+@api_view(['GET'])
+def get_by_nick(request, nick):
+    try:
+        user = User.objects.get(pk=nick)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        
+        serializer = userSerializer(user) # objeto único
+
+        return Response(serializer.data)
